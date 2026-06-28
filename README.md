@@ -26,11 +26,7 @@ Este projeto foi construído focado em performance, usando tecnologias web nativ
 
 Como o jogo é uma aplicação Single-Page (SPA) baseada em Vanilla JS, não precisas de processos complexos de build.
 
-1. Faz o clone deste repositório:
-   `git clone https://github.com/Belardino-Capessa/ludo-chaos.git`
-2. Navega até à pasta do projeto:
-   `cd ludo-chaos`
-3. Abre o arquivo `index.html` diretamente no teu navegador, ou usa uma extensão como o *Live Server* no VS Code.
+• Abra esse endereço no seu navegador para jogar ele :https://belardino-capessa.github.io/LudoChaos-/
 
 **Nota para o Multiplayer Online:** O jogo já está configurado com o Firebase. Para que o modo online funcione perfeitamente, o jogo deve ser acedido através de um servidor HTTP/HTTPS (local ou em produção).
 
