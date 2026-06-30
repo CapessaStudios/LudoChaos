@@ -13,25 +13,25 @@
   ],
   "icons": [
     {
-      "src": "imagem/logo192.png",
+      "src": "assets/imagem/logo192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "imagem/logo192.png",
+      "src": "assets/imagem/logo192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "imagem/logo512.png",
+      "src": "assets/imagem/logo512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "imagem/logo512.png",
+      "src": "assets/imagem/logo512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -39,32 +39,32 @@
   ],
   "screenshots": [
     {
-      "src": "imagem/screen1.jpg",
+      "src": "assets/imagem/screen1.jpg",
       "sizes": "1080x1920",
-      "type": "image/jpeg",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Menu Principal e Modos de Jogo"
     },
     {
-      "src": "imagem/screen2.jpg",
+      "src": "assets/imagem/screen2.jpg",
       "sizes": "1080x1920",
       "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Tabuleiro e Cartas do LudoChaos"
     },
     {
-      "src": "imagem/screen3.jpg",
-      "sizes": "1920x1080",
-      "type": "image/jpeg",
-      "form_factor": "wide",
-      "label": "Visão Expandida do Tabuleiro"
+      "src": "assets/imagem/screen3.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Modo Online"
     },
     {
-      "src": "imagem/screen4.jpg",
-      "sizes": "1920x1080",
-      "type": "image/jpeg",
-      "form_factor": "wide",
-      "label": "Sistema de Logs e Notificações"
+      "src": "assets/imagem/screen4.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela de Definições"
     }
   ]
     }
