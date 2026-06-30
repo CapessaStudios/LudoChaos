@@ -1,16 +1,36 @@
 {
+  "id": "/LudoChaos/",
+
   "name": "LudoChaos",
   "short_name": "LudoChaos",
-  "description": "LudoChaos é um jogo moderno de Ludo com cartas estratégicas, poderes únicos e multiplayer online ou offline desenvolvido pela Capessa Studios.",
+
+  "description": "LudoChaos é um jogo moderno de Ludo com cartas estratégicas, poderes únicos e modos multiplayer online e offline desenvolvido pela Capessa Studios.",
+
+  "lang": "pt",
+  "dir": "ltr",
+
   "start_url": "./index.html",
+  "scope": "./",
+
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+
+  "orientation": "portrait",
+
   "background_color": "#120F0E",
   "theme_color": "#1A1F2E",
-  "orientation": "portrait",
+
   "categories": [
     "games",
-    "strategy"
+    "strategy",
+    "board"
   ],
+
+  "prefer_related_applications": false,
+
   "icons": [
     {
       "src": "assets/imagem/logo192.png",
@@ -37,6 +57,7 @@
       "purpose": "maskable"
     }
   ],
+
   "screenshots": [
     {
       "src": "assets/imagem/screen1.png",
@@ -50,14 +71,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Painel Principal e Modos de jogo"
+      "label": "Painel Principal e Modos de Jogo"
     },
     {
       "src": "assets/imagem/screen3.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tabuleiro e Cartas do LudoChaos"
+      "label": "Tabuleiro e Cartas"
     },
     {
       "src": "assets/imagem/screen4.png",
@@ -71,7 +92,34 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tela de Definições"
+      "label": "Configurações"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Jogar",
+      "short_name": "Jogar",
+      "description": "Iniciar uma nova partida",
+      "url": "./index.html#play",
+      "icons": [
+        {
+          "src": "assets/imagem/logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Multijogador",
+      "short_name": "Online",
+      "description": "Entrar no modo online",
+      "url": "./index.html#online",
+      "icons": [
+        {
+          "src": "assets/imagem/logo192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
-    }
+}
