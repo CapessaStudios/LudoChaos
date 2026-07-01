@@ -3,8 +3,7 @@
 
   "name": "LudoChaos",
   "short_name": "LudoChaos",
-
-  "description": "LudoChaos é um jogo moderno de Ludo com cartas estratégicas, poderes únicos e modos multiplayer online e offline desenvolvido pela Capessa Studios.",
+  "description": "LudoChaos é um jogo moderno de Ludo com cartas estratégicas, poderes únicos, multiplayer online e offline desenvolvido pela Capessa Studios.",
 
   "lang": "pt",
   "dir": "ltr",
@@ -32,6 +31,12 @@
 
   "prefer_related_applications": false,
 
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+
   "icons": [
     {
       "src": "assets/imagem/logo192.png",
@@ -53,35 +58,21 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tela de carregamento"
+      "label": "Tela inicial"
     },
     {
       "src": "assets/imagem/screen2.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Painel Principal e Modos de Jogo"
+      "label": "Menu principal"
     },
     {
       "src": "assets/imagem/screen3.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tabuleiro e Cartas"
-    },
-    {
-      "src": "assets/imagem/screen4.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Modo Online"
-    },
-    {
-      "src": "assets/imagem/screen5.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Configurações"
+      "label": "Tabuleiro e cartas"
     }
   ],
 
@@ -89,7 +80,7 @@
     {
       "name": "Jogar",
       "short_name": "Jogar",
-      "description": "Iniciar uma nova partida",
+      "description": "Iniciar partida",
       "url": "./index.html#play",
       "icons": [
         {
@@ -100,9 +91,9 @@
       ]
     },
     {
-      "name": "Multijogador",
+      "name": "Online",
       "short_name": "Online",
-      "description": "Entrar no modo online",
+      "description": "Modo multiplayer",
       "url": "./index.html#online",
       "icons": [
         {
@@ -112,5 +103,26 @@
         }
       ]
     }
-  ]
+  ],
+
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
     }
+  },
+
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://belardino-capessa.github.io/LudoChaos/manifest.json"
+    }
+  ]
+}
