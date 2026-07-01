@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "773458830401",
+    "firebase_url": "https://ludochaos-75748-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "ludochaos-75748",
+    "storage_bucket": "ludochaos-75748.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773458830401:android:08ecf7f93e04fe371892c0",
+        "android_client_info": {
+          "package_name": "com.capessastudios.ludochaos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDISu8eGAr3flwo5NvkkDTaOcSNpOIRKVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
