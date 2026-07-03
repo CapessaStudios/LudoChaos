@@ -1,0 +1,6 @@
+{
+  "appId": "com.capessastudios.ludochaos",
+  "appName": "LudoChaos",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
