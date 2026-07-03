@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Configurar Java 21 (Resolve o erro do source release 21)
+      # 3. Java 21
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
@@ -32,33 +32,32 @@ jobs:
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 5. Preparar web assets
+      # 5. Garantir estrutura web
       - name: Prepare web assets
         run: |
           mkdir -p www
           cp -r index.html www/ || true
-          cp -r css www/ || true
-          cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 6. Init Capacitor
+      # 6. Init Capacitor (apenas se necessário)
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Reset Android
-      - name: Reset Android project
+      # 7. Garantir Android existe
+      - name: Setup Android
         run: |
-          rm -rf android
-          npx cap add android
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
 
-      # 8. Sync Capacitor
+      # 8. Sync Capacitor (CORRETO)
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Build APK (Com Java 21 nativo do projeto)
+      # 9. Build APK
       - name: Build APK
         run: |
           cd android
