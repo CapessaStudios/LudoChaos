@@ -1,0 +1,25 @@
+{
+  "name": "ludochaos",
+  "version": "1.0.0",
+  "description": "LudoChaos - jogo desenvolvido com HTML e Capacitor para Android",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo \"No build step required (static HTML project)\"",
+    "prepare": "echo \"Preparing project for Capacitor\""
+  },
+  "keywords": [
+    "ludo",
+    "game",
+    "capacitor",
+    "android",
+    "html"
+  ],
+  "author": "Belardino Capessa",
+  "license": "MIT",
+  "publisher": "Capessa Studios",
+  "dependencies": {},
+  "devDependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/cli": "^6.0.0"
+  }
+}
