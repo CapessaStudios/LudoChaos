@@ -20,12 +20,12 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Java (estável para Capacitor)
+      # 3. Java 21 (Obrigatório para versões recentes do Capacitor/Android)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       # 4. Instalar dependências
       - name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm install @capacitor/assets
 
-      # 5. Preparar web assets
+      # 5. Preparar web assets (Garante que a pasta existe antes do Capacitor)
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -42,33 +42,41 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 6. Capacitor init seguro
+      # 6. Capacitor init seguro (só corre se não existir o ficheiro de configuração)
       - name: Init Capacitor
         run: |
-          npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www" || true
-
-      # 7. Criar Android (se não existir)
-      - name: Add Android
-        run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
+          if [ ! -f "capacitor.config.json" ]; then
+            npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
+
+      # 7. Forçar recriação da pasta Android para garantir o gradlew
+      - name: Add Android Platform
+        run: |
+          rm -rf android
+          npx cap add android
 
       # 8. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. 🔥 ÍCONE CORRETO (IMPORTANTE)
+      # 9. ÍCONES (Só corre se o ficheiro base existir para não quebrar o fluxo)
       - name: Generate Android Icons
         run: |
-          npx @capacitor/assets generate \
-            --icon resources/icon.png || true
+          if [ -f "resources/icon.png" ]; then
+            npx @capacitor/assets generate --icon resources/icon.png
+          else
+            echo "Aviso: resources/icon.png não encontrado. Usando ícones padrão."
+          fi
 
       # 10. KEYS (assinatura)
       - name: Restore Keystore
         run: |
           mkdir -p android/app/keystore
-          cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
+          if [ -d "keystores" ]; then
+            cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
+          else
+            echo "Aviso: Pasta keystores não encontrada!"
+          fi
 
       # 11. key.properties
       - name: Create key.properties
@@ -80,42 +88,30 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
-      # 12. Build Debug APK
-      - name: Build Debug APK
+      # 12. Compilação Completa (Debug, Release e AAB)
+      - name: Build APKs and AAB
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-
-      # 13. Build Release APK
-      - name: Build Release APK
-        run: |
-          cd android
-          chmod +x gradlew
           ./gradlew assembleRelease
-
-      # 14. Build AAB (Play Store)
-      - name: Build Release AAB
-        run: |
-          cd android
-          chmod +x gradlew
           ./gradlew bundleRelease
 
-      # 15. Upload Debug
+      # 13. Upload Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # 16. Upload Release APK
+      # 14. Upload Release APK
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Release-APK
           path: android/app/build/outputs/apk/release/app-release.apk
 
-      # 17. Upload AAB (PLAY STORE)
+      # 15. Upload AAB (PLAY STORE)
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
