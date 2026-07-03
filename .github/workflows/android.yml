@@ -9,38 +9,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
-     with:
-     node-version: 22
-    - name: Install dependencies
-      run: |
-        npm init -y
-        npm install @capacitor/core @capacitor/cli @capacitor/android
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-    - name: Create Capacitor config
-      run: |
-        npx cap init "Ludo Chaos" "com.capessastudios.ludochaos" --web-dir="."
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
-    - name: Add Android
-      run: |
-        npx cap add android
+      - name: Create Capacitor config
+        run: |
+          npx cap init "Ludo Chaos" "com.capessastudios.ludochaos" --web-dir="."
 
-    - name: Copy web assets
-      run: |
-        npx cap copy
+      - name: Add Android
+        run: |
+          npx cap add android
 
-    - name: Build APK
-      run: |
-        cd android
-        chmod +x gradlew
-        ./gradlew assembleDebug
+      - name: Copy web assets
+        run: |
+          npx cap copy
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: LudoChaos-APK
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LudoChaos-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
