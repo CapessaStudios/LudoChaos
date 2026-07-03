@@ -32,33 +32,35 @@ jobs:
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 5. Garantir estrutura web
+      # 5. Garantir estrutura web (IMPORTANTE)
       - name: Prepare web assets
         run: |
           mkdir -p www
           cp -r index.html www/ || true
+          cp -r css www/ || true
+          cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 6. Init Capacitor (apenas se necessário)
+      # 6. Inicializar Capacitor (só se não existir)
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Garantir Android existe
+      # 7. Criar Android (se não existir)
       - name: Setup Android
         run: |
           if [ ! -d "android" ]; then
             npx cap add android
           fi
 
-      # 8. Sync Capacitor (CORRETO)
+      # 8. 🔥 Sync obrigatório ANTES do build
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Build APK
-      - name: Build APK
+      # 9. Build APK Debug
+      - name: Build APK Debug
         run: |
           cd android
           chmod +x gradlew
@@ -68,5 +70,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: LudoChaos-APK
+          name: LudoChaos-APK-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
