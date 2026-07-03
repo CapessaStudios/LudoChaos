@@ -46,14 +46,14 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 7. Garantir config Capacitor
+      # 7. Init Capacitor
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 8. Reset total do Android (evita gradlew missing)
+      # 8. Reset Android TOTAL (garante gradlew)
       - name: Reset Android project
         run: |
           rm -rf android
@@ -63,15 +63,12 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 10. FIX Java 21 → Java 17 (RESOLVE TEU ERRO FINAL)
-      - name: Fix Android Java version
+      # 10. 🔥 HARD FIX (FORÇA Java 17 EM TODO O ANDROID)
+      - name: Force Java 17 everywhere
         run: |
-          FILE="android/app/build.gradle"
-
-          if [ -f "$FILE" ]; then
-            sed -i 's/VERSION_21/VERSION_17/g' $FILE || true
-            sed -i 's/jvmTarget = "21"/jvmTarget = "17"/g' $FILE || true
-          fi
+          find android -name "*.gradle" -type f -exec sed -i 's/21/17/g' {} \;
+          find android -name "*.gradle" -type f -exec sed -i 's/VERSION_21/VERSION_17/g' {} \;
+          find android -name "*.gradle" -type f -exec sed -i 's/jvmTarget = "21"/jvmTarget = "17"/g' {} \;
 
       # 11. Build APK
       - name: Build APK
