@@ -10,30 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout
+      # 1. Checkout do código
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Node.js
+      # 2. Configurar o Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # 3. Java 21 (Obrigatório para versões recentes do Capacitor/Android)
+      # 3. Configurar Java 21 (Obrigatório para versões recentes do Capacitor/Android)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
-      # 4. Instalar dependências
+      # 4. Instalar as dependências do projeto e do Capacitor
       - name: Install dependencies
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm install @capacitor/assets
 
-      # 5. Preparar web assets (Garante que a pasta existe antes do Capacitor)
+      # 5. Preparar os web assets (Garante que a pasta existe antes do Capacitor)
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -42,43 +42,43 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 6. Capacitor init seguro (só corre se não existir o ficheiro de configuração)
+      # 6. Inicializar o Capacitor de forma segura
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Forçar recriação da pasta Android para garantir o gradlew
+      # 7. Forçar a recriação da pasta Android para garantir que o gradlew é gerado
       - name: Add Android Platform
         run: |
           rm -rf android
           npx cap add android
 
-      # 8. Sync Capacitor
+      # 8. Sincronizar o Capacitor com o projeto Android
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. ÍCONES (Só corre se o ficheiro base existir para não quebrar o fluxo)
+      # 9. Gerar os ícones do Android usando a sintaxe correta do @capacitor/assets
       - name: Generate Android Icons
         run: |
           if [ -f "resources/icon.png" ]; then
-            npx @capacitor/assets generate --icon resources/icon.png
+            npx @capacitor/assets generate --android
           else
             echo "Aviso: resources/icon.png não encontrado. Usando ícones padrão."
           fi
 
-      # 10. KEYS (assinatura)
+      # 10. Restaurar a Keystore (Assinatura do APK/AAB)
       - name: Restore Keystore
         run: |
           mkdir -p android/app/keystore
           if [ -d "keystores" ]; then
             cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
           else
-            echo "Aviso: Pasta keystores não encontrada!"
+            echo "Aviso: Pasta 'keystores' não encontrada no repositório!"
           fi
 
-      # 11. key.properties
+      # 11. Criar o ficheiro key.properties com as variáveis secretas do GitHub
       - name: Create key.properties
         run: |
           cat > android/key.properties <<EOF
@@ -88,7 +88,7 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
-      # 12. Compilação Completa (Debug, Release e AAB)
+      # 12. Compilação dos APKs (Debug e Release) e do AAB (Play Store)
       - name: Build APKs and AAB
         run: |
           cd android
@@ -97,21 +97,21 @@ jobs:
           ./gradlew assembleRelease
           ./gradlew bundleRelease
 
-      # 13. Upload Debug APK
+      # 13. Fazer o Upload do Debug APK para os artefactos do GitHub
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # 14. Upload Release APK
+      # 14. Fazer o Upload do Release APK assinado
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Release-APK
           path: android/app/build/outputs/apk/release/app-release.apk
 
-      # 15. Upload AAB (PLAY STORE)
+      # 15. Fazer o Upload do AAB para publicação na Google Play Store
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
