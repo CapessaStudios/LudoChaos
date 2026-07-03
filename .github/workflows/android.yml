@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android (APK + AAB Signed)
 
 on:
   push:
@@ -20,12 +20,12 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Java 21
-      - name: Setup Java 21
+      # 3. Java (estável para Capacitor)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: 17
 
       # 4. Instalar dependências
       - name: Install dependencies
@@ -33,12 +33,7 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm install @capacitor/assets
 
-      # 5. Gerar ícones Android
-      - name: Generate Android Icons
-        run: |
-          npx capacitor-assets generate || true
-
-      # 6. Preparar assets web
+      # 5. Preparar web assets
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -47,33 +42,35 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 7. Init Capacitor (SEMPRE FORÇADO)
+      # 6. Capacitor init seguro
       - name: Init Capacitor
         run: |
           npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www" || true
 
-      # 8. 🔥 FORÇAR CRIAÇÃO DO ANDROID (CORREÇÃO DO gradlew)
-      - name: Add Android platform
+      # 7. Criar Android (se não existir)
+      - name: Add Android
         run: |
-          rm -rf android
-          npx cap add android
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
 
-      # 9. Sync Capacitor
+      # 8. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 10. Debug Android structure (IMPORTANTE)
-      - name: Check Android structure
+      # 9. 🔥 ÍCONE CORRETO (IMPORTANTE)
+      - name: Generate Android Icons
         run: |
-          ls -R android
+          npx @capacitor/assets generate \
+            --icon resources/icon.png || true
 
-      # 11. 🔐 Restore Keystore
+      # 10. KEYS (assinatura)
       - name: Restore Keystore
         run: |
           mkdir -p android/app/keystore
           cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
 
-      # 12. 🔐 Create key.properties
+      # 11. key.properties
       - name: Create key.properties
         run: |
           cat > android/key.properties <<EOF
@@ -83,30 +80,44 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
-      # 13. Build Debug APK
+      # 12. Build Debug APK
       - name: Build Debug APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 14. Build Release APK (ASSINADO)
+      # 13. Build Release APK
       - name: Build Release APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      # 15. Upload Debug APK
+      # 14. Build AAB (Play Store)
+      - name: Build Release AAB
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+
+      # 15. Upload Debug
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # 16. Upload Release APK (ASSINADO)
+      # 16. Upload Release APK
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: LudoChaos-Release
+          name: LudoChaos-Release-APK
           path: android/app/build/outputs/apk/release/app-release.apk
+
+      # 17. Upload AAB (PLAY STORE)
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: LudoChaos-PlayStore-AAB
+          path: android/app/build/outputs/bundle/release/app-release.aab
