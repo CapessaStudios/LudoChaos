@@ -38,7 +38,7 @@ jobs:
         run: |
           npx capacitor-assets generate || true
 
-      # 6. Preparar assets
+      # 6. Preparar assets web
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -47,31 +47,33 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 7. Init Capacitor
+      # 7. Init Capacitor (SEMPRE FORÇADO)
       - name: Init Capacitor
         run: |
-          if [ ! -f "capacitor.config.json" ]; then
-            npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
-          fi
+          npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www" || true
 
-      # 8. Setup Android
-      - name: Setup Android
+      # 8. 🔥 FORÇAR CRIAÇÃO DO ANDROID (CORREÇÃO DO gradlew)
+      - name: Add Android platform
         run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
+          rm -rf android
+          npx cap add android
 
       # 9. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 10. 🔐 Restore Keystore
+      # 10. Debug Android structure (IMPORTANTE)
+      - name: Check Android structure
+        run: |
+          ls -R android
+
+      # 11. 🔐 Restore Keystore
       - name: Restore Keystore
         run: |
           mkdir -p android/app/keystore
           cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
 
-      # 11. 🔐 Create key.properties
+      # 12. 🔐 Create key.properties
       - name: Create key.properties
         run: |
           cat > android/key.properties <<EOF
@@ -81,28 +83,28 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
-      # 12. Build Debug APK
+      # 13. Build Debug APK
       - name: Build Debug APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 13. 🔥 Build Release (ASSINADO)
+      # 14. Build Release APK (ASSINADO)
       - name: Build Release APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      # 14. Upload Debug APK
+      # 15. Upload Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      # 15. Upload Release APK (ASSINADO)
+      # 16. Upload Release APK (ASSINADO)
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
