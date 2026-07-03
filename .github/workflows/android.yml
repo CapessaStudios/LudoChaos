@@ -3,43 +3,63 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout do código
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      # 3. Instalar dependências do Capacitor
       - name: Install dependencies
         run: |
-          npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Create Capacitor config
+      # 4. Garantir estrutura web (OBRIGATÓRIO)
+      - name: Prepare web assets
         run: |
-          npx cap init "Ludo Chaos" "com.capessastudios.ludochaos" --web-dir="."
+          mkdir -p www
+          cp -r index.html www/ || true
+          cp -r css www/ || true
+          cp -r js www/ || true
+          cp -r assets www/ || true
 
-      - name: Add Android
+      # 5. Inicializar Capacitor (só se ainda não existir android/)
+      - name: Init Capacitor (if needed)
         run: |
-          npx cap add android
+          if [ ! -d "android" ]; then
+            npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
+          fi
 
-      - name: Copy web assets
+      # 6. Add Android (só 1 vez)
+      - name: Add Android platform
         run: |
-          npx cap copy
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
 
+      # 7. Sync Capacitor (CORRETO)
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # 8. Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
+      # 9. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
