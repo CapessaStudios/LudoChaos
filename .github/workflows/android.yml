@@ -20,24 +20,19 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Java 17 (OBRIGATÓRIO)
-      - name: Setup Java 17
+      # 3. Configurar Java 21 (Resolve o erro do source release 21)
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
-      # 4. Forçar Gradle a usar Java 17
-      - name: Force Gradle Java 17
-        run: |
-          echo "org.gradle.java.home=$JAVA_HOME" >> gradle.properties || true
-
-      # 5. Instalar dependências Capacitor
+      # 4. Instalar dependências Capacitor
       - name: Install dependencies
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 6. Preparar web assets
+      # 5. Preparar web assets
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -46,38 +41,31 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 7. Init Capacitor
+      # 6. Init Capacitor
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 8. Reset Android TOTAL (garante gradlew)
+      # 7. Reset Android
       - name: Reset Android project
         run: |
           rm -rf android
           npx cap add android
 
-      # 9. Sync Capacitor
+      # 8. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 10. 🔥 HARD FIX (FORÇA Java 17 EM TODO O ANDROID)
-      - name: Force Java 17 everywhere
-        run: |
-          find android -name "*.gradle" -type f -exec sed -i 's/21/17/g' {} \;
-          find android -name "*.gradle" -type f -exec sed -i 's/VERSION_21/VERSION_17/g' {} \;
-          find android -name "*.gradle" -type f -exec sed -i 's/jvmTarget = "21"/jvmTarget = "17"/g' {} \;
-
-      # 11. Build APK
+      # 9. Build APK (Com Java 21 nativo do projeto)
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 12. Upload APK
+      # 10. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
