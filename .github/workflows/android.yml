@@ -27,7 +27,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # 4. Forçar Gradle a usar Java 17 (CORREÇÃO DO ERRO 21)
+      # 4. Forçar Gradle a usar Java 17
       - name: Force Gradle Java 17
         run: |
           echo "org.gradle.java.home=$JAVA_HOME" >> gradle.properties || true
@@ -46,19 +46,18 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 7. Init Capacitor (se não existir config)
+      # 7. Garantir config Capacitor
       - name: Init Capacitor
         run: |
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 8. Add Android (apenas uma vez)
-      - name: Add Android platform
+      # 8. RESET TOTAL DO ANDROID (FIX DO gradlew)
+      - name: Reset Android project
         run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
+          rm -rf android
+          npx cap add android
 
       # 9. Sync Capacitor
       - name: Sync Capacitor
