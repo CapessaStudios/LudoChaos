@@ -14,18 +14,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Node.js
+      # 2. Setup Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # 3. Instalar dependências do Capacitor
+      # 3. Setup Java 17 (FIX DO TEU ERRO)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # 4. Instalar dependências Capacitor
       - name: Install dependencies
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      # 4. Garantir estrutura web (OBRIGATÓRIO)
+      # 5. Garantir estrutura web
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -34,32 +41,32 @@ jobs:
           cp -r js www/ || true
           cp -r assets www/ || true
 
-      # 5. Inicializar Capacitor (só se ainda não existir android/)
+      # 6. Inicializar Capacitor (se necessário)
       - name: Init Capacitor (if needed)
         run: |
-          if [ ! -d "android" ]; then
+          if [ ! -f "capacitor.config.json" ]; then
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 6. Add Android (só 1 vez)
+      # 7. Adicionar Android (apenas uma vez)
       - name: Add Android platform
         run: |
           if [ ! -d "android" ]; then
             npx cap add android
           fi
 
-      # 7. Sync Capacitor (CORRETO)
+      # 8. Sync Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 8. Build APK
+      # 9. Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 9. Upload APK
+      # 10. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
