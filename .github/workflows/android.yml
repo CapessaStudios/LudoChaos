@@ -53,7 +53,7 @@ jobs:
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 8. RESET TOTAL DO ANDROID (FIX DO gradlew)
+      # 8. Reset total do Android (evita gradlew missing)
       - name: Reset Android project
         run: |
           rm -rf android
@@ -63,14 +63,24 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 10. Build APK
+      # 10. FIX Java 21 → Java 17 (RESOLVE TEU ERRO FINAL)
+      - name: Fix Android Java version
+        run: |
+          FILE="android/app/build.gradle"
+
+          if [ -f "$FILE" ]; then
+            sed -i 's/VERSION_21/VERSION_17/g' $FILE || true
+            sed -i 's/jvmTarget = "21"/jvmTarget = "17"/g' $FILE || true
+          fi
+
+      # 11. Build APK
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 11. Upload APK
+      # 12. Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
