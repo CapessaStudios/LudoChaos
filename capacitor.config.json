@@ -2,5 +2,12 @@
   "appId": "com.capessastudios.ludochaos",
   "appName": "LudoChaos",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1000,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffff",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
 }
