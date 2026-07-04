@@ -20,20 +20,20 @@ jobs:
         with:
           node-version: 22
 
-      # 3. Configurar Java 21 (Obrigatório para versões recentes do Capacitor/Android)
+      # 3. Configurar Java 21
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
-      # 4. Instalar as dependências do projeto e do Capacitor
+      # 4. Instalar as dependências
       - name: Install dependencies
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm install @capacitor/assets
 
-      # 5. Preparar os web assets (Garante que a pasta existe antes do Capacitor)
+      # 5. Preparar os web assets
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -49,47 +49,38 @@ jobs:
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Forçar a recriação da pasta Android para garantir que o gradlew é gerado
+      # 7. Forçar a recriação da pasta Android
       - name: Add Android Platform
         run: |
           rm -rf android
           npx cap add android
 
-      # 8. Sincronizar o Capacitor com o projeto Android
+      # 8. Sincronizar o Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Gerar os ícones do Android usando a sintaxe correta do @capacitor/assets
+      # 9. Gerar os ícones do Android
       - name: Generate Android Icons
         run: |
           if [ -f "resources/icon.png" ]; then
             npx @capacitor/assets generate --android
           else
-            echo "Aviso: resources/icon.png não encontrado. Usando ícones padrão."
+            echo "Aviso: resources/icon.png não encontrado."
           fi
 
-      # 10. Restaurar a Keystore (Assinatura do APK/AAB)
+      # 10. Restaurar a Keystore temporariamente
       - name: Restore Keystore
         run: |
-          mkdir -p android/app/keystore
+          mkdir -p keystores
           if [ -d "keystores" ]; then
-            cp keystores/capessastudios-ludochaos.keystore android/app/keystore/release.keystore
+            cp keystores/capessastudios-ludochaos.keystore release.keystore
           else
-            echo "Aviso: Pasta 'keystores' não encontrada no repositório!"
+            # Cria um local temporário se vier da pasta raiz antiga
+            cp capessastudios-ludochaos.keystore release.keystore || true
           fi
 
-      # 11. Criar o ficheiro key.properties com as variáveis secretas do GitHub
-      - name: Create key.properties
-        run: |
-          cat > android/key.properties <<EOF
-          storeFile=app/keystore/release.keystore
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
-          EOF
-
-      # 12. Compilação dos APKs (Debug e Release) e do AAB (Play Store)
-      - name: Build APKs and AAB
+      # 11. Compilação dos ficheiros brutos (Compila como Unsigned primeiro)
+      - name: Build APKs and AAB (Unsigned)
         run: |
           cd android
           chmod +x gradlew
@@ -97,23 +88,57 @@ jobs:
           ./gradlew assembleRelease
           ./gradlew bundleRelease
 
-      # 13. Fazer o Upload do Debug APK usando busca flexível
+      # 12. Assinatura Manual via APKSigner (Garante 100% que fica assinado)
+      - name: Sign Release APK and AAB Manually
+        run: |
+          # Localiza as ferramentas de build do Android instaladas no runner do GitHub
+          BUILD_TOOLS_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | sort -V | tail -n 1)
+          APKSIGNER_PATH="/usr/local/lib/android/sdk/build-tools/$BUILD_TOOLS_VERSION/apksigner"
+          
+          echo "Usando Android Build Tools versão: $BUILD_TOOLS_VERSION"
+          
+          # Encontra os ficheiros gerados pelo gradle
+          UNSIGNED_APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" | head -n 1)
+          UNSIGNED_AAB=$(find android/app/build/outputs/bundle/release/ -name "*.aab" | head -n 1)
+          
+          # Assina o APK
+          if [ ! -z "$UNSIGNED_APK" ]; then
+            echo "Assinando APK: $UNSIGNED_APK"
+            $APKSIGNER_PATH sign --ks release.keystore \
+              --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
+              --ks-key-alias ${{ secrets.KEY_ALIAS }} \
+              --key-pass pass:${{ secrets.KEY_PASSWORD }} \
+              --out android/app/build/outputs/apk/release/LudoChaos-Signed.apk \
+              $UNSIGNED_APK
+          fi
+          
+          # Nota: Para assinar o AAB de forma manual e segura, usa-se a ferramenta jarsigner incluída no Java
+          if [ ! -z "$UNSIGNED_AAB" ]; then
+            echo "Assinando AAB: $UNSIGNED_AAB"
+            jarsigner -keystore release.keystore \
+              -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+              -keypass ${{ secrets.KEY_PASSWORD }} \
+              $UNSIGNED_AAB ${{ secrets.KEY_ALIAS }}
+            cp $UNSIGNED_AAB android/app/build/outputs/bundle/release/LudoChaos-Signed.aab
+          fi
+
+      # 13. Upload do Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/**/*.apk
 
-      # 14. Fazer o Upload do Release APK usando busca flexível
-      - name: Upload Release APK
+      # 14. Upload do Release APK ASSINADO MANUALMENTE
+      - name: Upload Signed Release APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Release-APK
-          path: android/app/build/outputs/apk/release/**/*.apk
+          path: android/app/build/outputs/apk/release/*Signed.apk
 
-      # 15. Fazer o Upload do AAB para a Google Play Store
-      - name: Upload AAB
+      # 15. Upload do AAB ASSINADO MANUALMENTE
+      - name: Upload Signed AAB
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-PlayStore-AAB
-          path: android/app/build/outputs/bundle/release/**/*.aab
+          path: android/app/build/outputs/bundle/release/*Signed.aab
