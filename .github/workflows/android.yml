@@ -27,13 +27,12 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # 4. Instalar as dependências
+      # 4. Instalar as dependências (Node e Capacitor)
       - name: Install dependencies
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npm install @capacitor/assets
+          npm install
 
-      # 5. Preparar os web assets
+      # 5. Preparar os web assets (index.html, css, js, etc.)
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -49,46 +48,54 @@ jobs:
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Forçar a recriação da pasta Android
+      # 7. Forçar a recriação da pasta Android para garantir que o gradlew é gerado
       - name: Add Android Platform
         run: |
           rm -rf android
           npx cap add android
 
-      # 8. Sincronizar o Capacitor
+      # 8. Sincronizar o Capacitor com o projeto Android
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. Gerar os ícones do Android
-      - name: Generate Android Icons
+      # 9. 🔥 GERAR OS ASSETS (Ícones e Splash Screen)
+      - name: Generate Assets
         run: |
-          if [ -f "resources/icon.png" ]; then
-            npx @capacitor/assets generate --android
+          if [ -d "resources" ]; then
+            # Gera todos os assets (ícone e splash) baseados no que existir na pasta resources
+            npx @capacitor/assets generate
           else
-            echo "Aviso: resources/icon.png não encontrado."
+            echo "Aviso: Pasta resources não encontrada. Usando assets padrão."
           fi
 
-      # 10. Restaurar a Keystore temporariamente
+      # 10. Restaurar a Keystore (Assinatura do APK/AAB)
       - name: Restore Keystore
         run: |
           mkdir -p keystores
           if [ -d "keystores" ]; then
             cp keystores/capessastudios-ludochaos.keystore release.keystore
           else
-            # Cria um local temporário se vier da pasta raiz antiga
+            echo "Aviso: Pasta 'keystores' não encontrada no repositório!"
+            # Tenta copiar se estiver na raiz antiga
             cp capessastudios-ludochaos.keystore release.keystore || true
           fi
 
-      # 11. Compilação dos ficheiros brutos (Compila como Unsigned primeiro)
-      - name: Build APKs and AAB (Unsigned)
+      # 11. 🔥 LIMPEZA DO GRADHE (IMPORTANTE PARA REFRESH DOS ÍCONES)
+      - name: Gradle Clean
         run: |
           cd android
           chmod +x gradlew
+          ./gradlew clean
+
+      # 12. Compilação dos APKs (Debug e Release) e do AAB (Play Store)
+      - name: Build APKs and AAB (Unsigned)
+        run: |
+          cd android
           ./gradlew assembleDebug
           ./gradlew assembleRelease
           ./gradlew bundleRelease
 
-      # 12. Assinatura Manual via APKSigner (Garante 100% que fica assinado)
+      # 13. Assinatura Manual via APKSigner e Jarsigner (Garante o Signed)
       - name: Sign Release APK and AAB Manually
         run: |
           # Localiza as ferramentas de build do Android instaladas no runner do GitHub
@@ -112,31 +119,32 @@ jobs:
               $UNSIGNED_APK
           fi
           
-          # Nota: Para assinar o AAB de forma manual e segura, usa-se a ferramenta jarsigner incluída no Java
+          # Assina o AAB usando jarsigner (padrão para AAB)
           if [ ! -z "$UNSIGNED_AAB" ]; then
             echo "Assinando AAB: $UNSIGNED_AAB"
             jarsigner -keystore release.keystore \
               -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
               -keypass ${{ secrets.KEY_PASSWORD }} \
               $UNSIGNED_AAB ${{ secrets.KEY_ALIAS }}
+            # Renomeia para indicar que está assinado
             cp $UNSIGNED_AAB android/app/build/outputs/bundle/release/LudoChaos-Signed.aab
           fi
 
-      # 13. Upload do Debug APK
+      # 14. Upload do Debug APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/**/*.apk
 
-      # 14. Upload do Release APK ASSINADO MANUALMENTE
+      # 15. Upload do Release APK ASSINADO MANUALMENTE
       - name: Upload Signed Release APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Release-APK
           path: android/app/build/outputs/apk/release/*Signed.apk
 
-      # 15. Upload do AAB ASSINADO MANUALMENTE
+      # 16. Upload do AAB ASSINADO MANUALMENTE
       - name: Upload Signed AAB
         uses: actions/upload-artifact@v4
         with:
