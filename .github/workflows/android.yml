@@ -27,12 +27,12 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # 4. Instalar as dependências (Node e Capacitor)
+      # 4. Instalar as dependências do package.json
       - name: Install dependencies
         run: |
           npm install
 
-      # 5. Preparar os web assets (index.html, css, js, etc.)
+      # 5. Preparar os web assets
       - name: Prepare web assets
         run: |
           mkdir -p www
@@ -48,46 +48,50 @@ jobs:
             npx cap init "LudoChaos" "com.capessastudios.ludochaos" --web-dir="www"
           fi
 
-      # 7. Forçar a recriação da pasta Android para garantir que o gradlew é gerado
+      # 7. Forçar a recriação da pasta Android
       - name: Add Android Platform
         run: |
           rm -rf android
           npx cap add android
 
-      # 8. Sincronizar o Capacitor com o projeto Android
+      # 8. Sincronizar o Capacitor
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 9. 🔥 GERAR OS ASSETS (Ícones e Splash Screen)
-      - name: Generate Assets
+      # 9. 🔥 GERAR OS ASSETS DIRETAMENTE NAS PASTAS DO ANDROID STUDIO
+      - name: Generate Assets Overriding Defaults
         run: |
-          if [ -d "resources" ]; then
-            # Gera todos os assets (ícone e splash) baseados no que existir na pasta resources
-            npx @capacitor/assets generate
+          # Garante que a ferramenta está instalada globalmente/localmente no runner
+          npm install -g @capacitor/assets
+          
+          # Verifica se os ficheiros existem na pasta resources
+          if [ -f "resources/icon.png" ]; then
+            echo "Gerando ícones e splash screens personalizados..."
+            # Força a geração focada em Android com substituição total (icon + splash)
+            npx capacitor-assets generate --android --assetPath resources
           else
-            echo "Aviso: Pasta resources não encontrada. Usando assets padrão."
+            echo "Erro Crítico: resources/icon.png não foi encontrado na raiz!"
+            exit 1
           fi
 
-      # 10. Restaurar a Keystore (Assinatura do APK/AAB)
+      # 10. Restaurar a Keystore
       - name: Restore Keystore
         run: |
           mkdir -p keystores
           if [ -d "keystores" ]; then
             cp keystores/capessastudios-ludochaos.keystore release.keystore
           else
-            echo "Aviso: Pasta 'keystores' não encontrada no repositório!"
-            # Tenta copiar se estiver na raiz antiga
             cp capessastudios-ludochaos.keystore release.keystore || true
           fi
 
-      # 11. 🔥 LIMPEZA DO GRADHE (IMPORTANTE PARA REFRESH DOS ÍCONES)
+      # 11. Limpeza profunda do cache do Gradle
       - name: Gradle Clean
         run: |
           cd android
           chmod +x gradlew
           ./gradlew clean
 
-      # 12. Compilação dos APKs (Debug e Release) e do AAB (Play Store)
+      # 12. Compilação dos ficheiros
       - name: Build APKs and AAB (Unsigned)
         run: |
           cd android
@@ -95,22 +99,16 @@ jobs:
           ./gradlew assembleRelease
           ./gradlew bundleRelease
 
-      # 13. Assinatura Manual via APKSigner e Jarsigner (Garante o Signed)
+      # 13. Assinatura Manual
       - name: Sign Release APK and AAB Manually
         run: |
-          # Localiza as ferramentas de build do Android instaladas no runner do GitHub
           BUILD_TOOLS_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | sort -V | tail -n 1)
           APKSIGNER_PATH="/usr/local/lib/android/sdk/build-tools/$BUILD_TOOLS_VERSION/apksigner"
           
-          echo "Usando Android Build Tools versão: $BUILD_TOOLS_VERSION"
-          
-          # Encontra os ficheiros gerados pelo gradle
           UNSIGNED_APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" | head -n 1)
           UNSIGNED_AAB=$(find android/app/build/outputs/bundle/release/ -name "*.aab" | head -n 1)
           
-          # Assina o APK
           if [ ! -z "$UNSIGNED_APK" ]; then
-            echo "Assinando APK: $UNSIGNED_APK"
             $APKSIGNER_PATH sign --ks release.keystore \
               --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
               --ks-key-alias ${{ secrets.KEY_ALIAS }} \
@@ -119,32 +117,29 @@ jobs:
               $UNSIGNED_APK
           fi
           
-          # Assina o AAB usando jarsigner (padrão para AAB)
           if [ ! -z "$UNSIGNED_AAB" ]; then
-            echo "Assinando AAB: $UNSIGNED_AAB"
             jarsigner -keystore release.keystore \
               -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
               -keypass ${{ secrets.KEY_PASSWORD }} \
               $UNSIGNED_AAB ${{ secrets.KEY_ALIAS }}
-            # Renomeia para indicar que está assinado
             cp $UNSIGNED_AAB android/app/build/outputs/bundle/release/LudoChaos-Signed.aab
           fi
 
-      # 14. Upload do Debug APK
+      # 14. Artefactos finais
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Debug
           path: android/app/build/outputs/apk/debug/**/*.apk
 
-      # 15. Upload do Release APK ASSINADO MANUALMENTE
+      # 15. Upload do Release APK Assinado
       - name: Upload Signed Release APK
         uses: actions/upload-artifact@v4
         with:
           name: LudoChaos-Release-APK
           path: android/app/build/outputs/apk/release/*Signed.apk
 
-      # 16. Upload do AAB ASSINADO MANUALMENTE
+      # 16. Upload do AAB Assinado
       - name: Upload Signed AAB
         uses: actions/upload-artifact@v4
         with:
