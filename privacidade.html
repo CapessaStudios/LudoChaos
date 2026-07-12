@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Política de Privacidade - Ludo Chaos | Capessa Studios</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+
+@font-face{
+  font-family:'DMSerif';
+  font-weight:400;
+  src:local('DM Serif Display');
+}
+
+:root{
+  --bg:#F7F5F2;
+  --surface:#FFFFFF;
+  --surface2:#F0EDE8;
+  --border:#E0DBD4;
+
+  --text:#1A1614;
+  --text2:#5C534A;
+  --text3:#9C8F84;
+
+  --shadow:rgba(26,22,20,.08);
+
+  --red:#C0392B;
+  --blue:#2471A3;
+  --green:#1E8449;
+  --yellow:#B7950B;
+
+  --radius:16px;
+}
+
+
+[data-theme="dark"]{
+
+  --bg:#12151E;
+  --surface:#1A1F2E;
+  --surface2:#202636;
+  --border:#2E364D;
+
+  --text:#E8E4DC;
+  --text2:#B5BDD2;
+  --text3:#78829E;
+
+  --shadow:rgba(0,0,0,.35);
+
+}
+
+
+*{
+ box-sizing:border-box;
+}
+
+
+body{
+
+ margin:0;
+
+ background:var(--bg);
+
+ color:var(--text);
+
+ font-family:
+ -apple-system,
+ BlinkMacSystemFont,
+ "Inter",
+ Arial,
+ sans-serif;
+
+ line-height:1.6;
+
+}
+
+
+.wrap{
+
+ max-width:760px;
+
+ margin:auto;
+
+ padding:30px 20px 60px;
+
+}
+
+
+/* CABEÇALHO */
+
+header{
+
+ text-align:center;
+
+ margin-bottom:35px;
+
+}
+
+
+.logo-icon{
+
+ width:80px;
+ height:80px;
+
+ margin:auto;
+ margin-bottom:15px;
+
+ border-radius:22px;
+
+ display:flex;
+ align-items:center;
+ justify-content:center;
+
+ font-size:35px;
+
+ color:white;
+
+ background:
+ linear-gradient(
+ 135deg,
+ #C0392B,
+ #2471A3,
+ #1E8449
+ );
+
+ box-shadow:
+ 0 10px 25px var(--shadow);
+
+}
+
+
+.brand{
+
+ font-size:.85rem;
+
+ letter-spacing:.12em;
+
+ text-transform:uppercase;
+
+ color:var(--text3);
+
+ font-weight:700;
+
+}
+
+
+h1{
+
+ font-family:'DMSerif',Georgia,serif;
+
+ font-size:2rem;
+
+ font-weight:400;
+
+ margin:8px 0;
+
+ letter-spacing:-.02em;
+
+}
+
+
+.subtitle{
+
+ color:var(--text2);
+
+ font-size:1rem;
+
+}
+
+
+.updated{
+
+ margin-top:12px;
+
+ font-size:.85rem;
+
+ color:var(--text3);
+
+}
+
+
+/* CARTÕES */
+
+
+section{
+
+ background:var(--surface);
+
+ border:1px solid var(--border);
+
+ border-radius:var(--radius);
+
+ padding:25px;
+
+ margin-bottom:18px;
+
+ box-shadow:
+ 0 5px 18px var(--shadow);
+
+}
+
+
+.section-title{
+
+ display:flex;
+
+ align-items:center;
+
+ gap:10px;
+
+ margin-bottom:15px;
+
+}
+
+
+.section-title i{
+
+ font-size:20px;
+
+ color:var(--blue);
+
+}
+
+
+h2{
+
+ font-family:'DMSerif',Georgia,serif;
+
+ font-weight:400;
+
+ font-size:1.35rem;
+
+ margin:0;
+
+}
+
+
+p{
+
+ margin:0 0 12px;
+
+ color:var(--text2);
+
+ font-size:.96rem;
+
+}
+
+
+ul{
+
+ padding-left:20px;
+
+}
+
+
+li{
+
+ color:var(--text2);
+
+ margin-bottom:8px;
+
+}
+
+
+/* TAGS */
+
+
+.tags{
+
+ display:flex;
+
+ flex-wrap:wrap;
+
+ gap:8px;
+
+ margin-top:15px;
+
+}
+
+
+.tag{
+
+ padding:6px 12px;
+
+ border-radius:50px;
+
+ font-size:.75rem;
+
+ font-weight:700;
+
+}
+
+
+.good{
+
+ background:rgba(30,132,73,.12);
+
+ color:var(--green);
+
+}
+
+
+.bad{
+
+ background:rgba(192,57,43,.12);
+
+ color:var(--red);
+
+}
+
+
+
+/* CONTACTO */
+
+
+.contact{
+
+ text-align:center;
+
+ background:var(--surface2);
+
+ border-radius:var(--radius);
+
+ padding:25px;
+
+}
+
+
+.contact i{
+
+ color:var(--blue);
+
+ font-size:22px;
+
+ margin-bottom:10px;
+
+}
+
+
+.contact a{
+
+ color:var(--blue);
+
+ text-decoration:none;
+
+ font-weight:600;
+
+}
+
+
+
+/* FOOTER */
+
+
+footer{
+
+ text-align:center;
+
+ color:var(--text3);
+
+ font-size:.8rem;
+
+ margin-top:30px;
+
+}
+
+
+
+@media(max-width:500px){
+
+ h1{
+
+ font-size:1.6rem;
+
+ }
+
+
+ section{
+
+ padding:20px;
+
+ }
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="wrap">
+
+
+<header>
+
+<div class="logo-icon">
+
+<i class="fa-solid fa-dice"></i>
+
+</div>
+
+
+<div class="brand">
+
+Capessa Studios
+
+</div>
+
+
+<h1>
+
+Política de Privacidade
+
+<br>
+
+Ludo Chaos
+
+</h1>
+
+
+<div class="subtitle">
+
+Cada jogada muda o destino.
+
+</div>
+
+
+<div class="updated">
+
+Última atualização: 12 de julho de 2026
+
+</div>
+
+
+</header>
+
+  <section>
+  <h2><i class="fa-solid fa-shield-halved"></i> Resumo direto</h2>
+
+  <p>
+    O LudoChaos não pede contas, não pede email, não usa anúncios e não vende dados a ninguém.
+    Esta é a explicação completa de como o jogo trata as tuas informações.
+  </p>
+
+  <div>
+    <span class="tag no"><i class="fa-solid fa-user-slash"></i> Sem contas</span>
+    <span class="tag no"><i class="fa-solid fa-ban"></i> Sem anúncios</span>
+    <span class="tag no"><i class="fa-solid fa-eye-slash"></i> Sem rastreamento</span>
+    <span class="tag no"><i class="fa-solid fa-database"></i> Sem venda de dados</span>
+    <span class="tag yes"><i class="fa-solid fa-floppy-disk"></i> Guarda progresso no telemóvel</span>
+    <span class="tag yes"><i class="fa-solid fa-users"></i> Multijogador opcional</span>
+  </div>
+</section>
+
+
+<section>
+  <h2><i class="fa-solid fa-mobile-screen-button"></i> 1. Dados guardados só no teu dispositivo</h2>
+
+  <p>
+    Para jogares offline (contra bots ou pass-and-play), o LudoChaos guarda tudo localmente
+    no teu telemóvel através do armazenamento da aplicação. Isto inclui:
+  </p>
+
+  <ul>
+    <li>
+      <i class="fa-solid fa-gamepad"></i>
+      Progresso do jogo em curso (posições das peças, cartas na mão)
+    </li>
+
+    <li>
+      <i class="fa-solid fa-chart-line"></i>
+      Estatísticas, conquistas e sequência de vitórias
+    </li>
+
+    <li>
+      <i class="fa-solid fa-coins"></i>
+      Chaos Coins e cosméticos comprados na loja (peças, tabuleiros, dados, efeitos)
+    </li>
+
+    <li>
+      <i class="fa-solid fa-sliders"></i>
+      Preferências (tema claro/escuro, volume, animações de fundo)
+    </li>
+  </ul>
+
+  <p>
+    <strong>
+      <i class="fa-solid fa-lock"></i>
+      Estes dados nunca saem do teu telemóvel
+    </strong>
+    nesta forma de jogo. Não temos acesso a eles, não os copiamos para servidores.
+    Se desinstalares a aplicação ou limpares os dados, desaparecem completamente.
+  </p>
+</section>
+
+
+<section>
+  <h2><i class="fa-solid fa-earth-americas"></i> 2. Dados usados no multijogador online</h2>
+
+  <p>
+    Quando escolhes jogar online (criar ou entrar numa sala), o LudoChaos utiliza
+    o Firebase Realtime Database (Google) para sincronizar a partida entre jogadores.
+  </p>
+
+  <p>
+    Para isso, alguns dados temporários podem ser partilhados:
+  </p>
+
+  <ul>
+    <li>
+      <i class="fa-solid fa-user"></i>
+      <strong>Nome/alcunha</strong> escolhido antes de entrar na sala.
+    </li>
+
+    <li>
+      <i class="fa-solid fa-face-smile"></i>
+      <strong>Avatar ou emoji</strong> selecionado pelo jogador.
+    </li>
+
+    <li>
+      <i class="fa-solid fa-key"></i>
+      <strong>Código da sala</strong> e estado da partida
+      (dados lançados, posições das peças e cartas utilizadas).
+    </li>
+  </ul>
+
+  <p>
+    <i class="fa-solid fa-clock"></i>
+    Estes dados existem apenas enquanto a sala está ativa.
+    Quando a partida termina ou todos saem, a sala é removida.
+    Não pedimos email, número de telefone, localização, câmara ou contactos.
+  </p>
+
+</section>
+
+
+<section>
+  <h2><i class="fa-solid fa-bell"></i> 3. Notificações</h2>
+
+  <p>
+    Se autorizares, o LudoChaos pode enviar notificações locais no teu telemóvel
+    relacionadas ao funcionamento do jogo.
+  </p>
+
+  <p>
+    <i class="fa-solid fa-toggle-off"></i>
+    Podes desativar esta opção a qualquer momento nas definições do teu dispositivo.
+    As notificações nunca são utilizadas para publicidade.
+  </p>
+
+</section>
+
+
+<section>
+  <h2><i class="fa-solid fa-circle-xmark"></i> 4. O que NÃO fazemos</h2>
+
+  <ul>
+
+    <li>
+      <i class="fa-solid fa-ban"></i>
+      Não mostramos anúncios de terceiros.
+    </li>
+
+    <li>
+      <i class="fa-solid fa-chart-simple"></i>
+      Não usamos ferramentas de análise ou rastreamento
+      (Google Analytics, Meta, etc.).
+    </li>
+
+    <li>
+      <i class="fa-solid fa-money-bill-transfer"></i>
+      Não vendemos, alugamos ou partilhamos dados para fins comerciais.
+    </li>
+
+    <li>
+      <i class="fa-solid fa-camera-slash"></i>
+      Não pedimos acesso à câmara, microfone, contactos ou localização.
+    </li>
+
+  </ul>
+
+</section>
+
+
+<section>
+  <h2><i class="fa-solid fa-cloud"></i> 5. Serviços de terceiros</h2>
+
+  <p>
+    O único serviço externo utilizado é o
+    <strong>
+      <i class="fa-brands fa-google"></i>
+      Firebase (Google)
+    </strong>,
+    exclusivamente para permitir o funcionamento do multijogador online
+    e sincronizar as partidas entre dispositivos.
+  </p>
+
+  <p>
+    <i class="fa-solid fa-circle-info"></i>
+    A Google pode processar alguns dados técnicos conforme a sua própria política
+    de privacidade, como fornecedora da infraestrutura.
+    A Capessa Studios não utiliza esses dados para publicidade ou venda.
+  </p>
+
+</section>
+
+       <section>
+      <h2><i class="fa-solid fa-children"></i> 6. Crianças</h2>
+      <p>
+        O Ludo Chaos é um jogo de tabuleiro casual adequado para diferentes idades.
+        Não recolhemos informações pessoais identificáveis de crianças ou outros utilizadores.
+      </p>
+      <p>
+        Não existe criação obrigatória de conta, recolha de dados sensíveis ou sistemas
+        de interação que exijam informações pessoais.
+      </p>
+    </section>
+
+    <section>
+      <h2><i class="fa-solid fa-user-shield"></i> 7. Segurança das informações</h2>
+      <p>
+        A Capessa Studios procura utilizar boas práticas para proteger a experiência
+        dos jogadores.
+      </p>
+      <ul>
+        <li>
+          <i class="fa-solid fa-mobile-screen"></i>
+          Dados offline permanecem armazenados no próprio dispositivo.
+        </li>
+        <li>
+          <i class="fa-solid fa-network-wired"></i>
+          Dados temporários do modo online são utilizados apenas para sincronizar partidas.
+        </li>
+        <li>
+          <i class="fa-solid fa-lock"></i>
+          Não recolhemos palavras-passe, documentos ou informações privadas.
+        </li>
+      </ul>
+    </section>
+
+
+    <section>
+      <h2><i class="fa-solid fa-trash-can"></i> 8. Eliminação de dados</h2>
+
+      <p>
+        Como grande parte dos dados do jogo é armazenada localmente no dispositivo,
+        o jogador pode remover essas informações a qualquer momento.
+      </p>
+
+      <ul>
+        <li>
+          <i class="fa-solid fa-gamepad"></i>
+          Apagar os dados da aplicação remove progresso, configurações e compras locais.
+        </li>
+        <li>
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          Sair de uma sala online remove a participação daquela partida.
+        </li>
+        <li>
+          <i class="fa-solid fa-mobile"></i>
+          Desinstalar o aplicativo remove os dados guardados no dispositivo.
+        </li>
+      </ul>
+
+    </section>
+
+
+    <section>
+      <h2><i class="fa-solid fa-rotate"></i> 9. Alterações nesta política</h2>
+
+      <p>
+        A Capessa Studios pode atualizar esta Política de Privacidade para refletir
+        melhorias no jogo, novos recursos ou alterações nos serviços utilizados.
+      </p>
+
+      <p>
+        Quando houver alterações importantes, a nova versão será publicada nesta página
+        com uma nova data de atualização.
+      </p>
+
+    </section>
+
+
+    <section>
+      <h2><i class="fa-solid fa-server"></i> 10. Serviços externos utilizados</h2>
+
+      <p>
+        Para fornecer algumas funcionalidades, como o modo multiplayer online,
+        o Ludo Chaos pode utilizar serviços externos de infraestrutura.
+      </p>
+
+      <ul>
+        <li>
+          <i class="fa-brands fa-google"></i>
+          Firebase (Google) — utilizado para sincronização das partidas online.
+        </li>
+
+        <li>
+          <i class="fa-solid fa-cloud"></i>
+          Serviços de armazenamento temporário necessários para funcionamento online.
+        </li>
+      </ul>
+
+      <p>
+        Esses serviços possuem as suas próprias políticas de privacidade.
+        A Capessa Studios não vende nem utiliza esses dados para publicidade.
+      </p>
+
+    </section>
+
+
+    <section>
+      <h2><i class="fa-solid fa-scale-balanced"></i> 11. Responsabilidade do utilizador</h2>
+
+      <p>
+        Ao utilizar o Ludo Chaos, o jogador concorda em utilizar o aplicativo
+        de forma adequada e respeitar as funcionalidades disponibilizadas.
+      </p>
+
+      <p>
+        O jogo foi desenvolvido para oferecer entretenimento, competição saudável
+        e uma experiência divertida entre jogadores.
+      </p>
+
+    </section>
+
+
+    <div class="contact">
+
+      <div class="contact-icon">
+        <i class="fa-solid fa-envelope-circle-check"></i>
+      </div>
+
+      <p>
+        <strong>
+          <i class="fa-solid fa-headset"></i>
+          Contacto
+        </strong>
+      </p>
+
+      <p>
+        Para dúvidas, sugestões ou questões relacionadas à privacidade,
+        podes entrar em contacto com a Capessa Studios através do suporte oficial
+        quando disponível.
+      </p>
+
+      <p>
+        Email: suporte@capessastudios.com
+      </p>
+
+    </div>
+
+
+    <footer>
+
+      <div class="footer-logo">
+        <i class="fa-solid fa-dice"></i>
+      </div>
+
+      <p>
+        Ludo Chaos<br>
+        Capessa Studios
+      </p>
+
+      <p>
+        Cada jogada muda o destino.
+      </p>
+
+      <small>
+        © 2026 Capessa Studios. Todos os direitos reservados.
+      </small>
+
+    </footer>
+
+  </div>
+
+</body>
+</html>
